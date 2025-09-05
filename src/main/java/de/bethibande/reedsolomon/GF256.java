@@ -27,20 +27,9 @@ public class GF256 {
         return a ^ b;
     }
 
-    public static int sub(int a, int b) {
-        return a ^ b;
-    }
-
     public static byte mul(int a, int b) {
         if (a == 0 || b == 0) return 0;
         return exp[log[a] + log[b]];
-    }
-
-    public static byte div(int a, int b) {
-        if (b == 0) throw new ArithmeticException("Division by zero");
-        if (a == 0) return 0;
-        int diff = log[a & 0xFF] - log[b & 0xFF];
-        return exp[diff];
     }
 
     public static byte pow(int a, int power) {
