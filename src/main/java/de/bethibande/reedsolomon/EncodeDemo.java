@@ -9,8 +9,10 @@ import java.util.stream.Stream;
 public class EncodeDemo {
 
     private static final Path FILE = Path.of("./example.png");
-
     public static final Path DATA_PATH = Path.of("./data/");
+
+    public static final String DATA_FILE_EXTENSION = "data";
+    public static final String PARITY_FILE_EXTENSION = "parity";
 
     public static final int DATA_SHARDS = 4;
     public static final int PARITY_SHARDS = 2;
@@ -38,11 +40,11 @@ public class EncodeDemo {
 
         int i = 0;
         for (final byte[] dataShard : dataShards) {
-            writeShard(i++, dataShard, "data");
+            writeShard(i++, dataShard, DATA_FILE_EXTENSION);
         }
         i = 0;
         for (final byte[] parityShard : parityShards) {
-            writeShard(i++, parityShard, "parity");
+            writeShard(i++, parityShard, PARITY_FILE_EXTENSION);
         }
 
         Metadata.writeFileMetadata(new Metadata(shardSize, Files.size(FILE)));

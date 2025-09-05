@@ -1,7 +1,5 @@
 package de.bethibande.reedsolomon;
 
-import java.io.ObjectInputStream.GetField;
-
 public class ByteMatrix {
 
     public static ByteMatrix identity(final int size) {
@@ -25,10 +23,6 @@ public class ByteMatrix {
         this.rows = row;
         this.columns = columns;
         this.values = values;
-    }
-
-    public int getRows() {
-        return rows;
     }
 
     public int getColumns() {
@@ -81,15 +75,6 @@ public class ByteMatrix {
             }
         }
         return result;
-    }
-
-    public void swapRows(int r1, int r2) {
-        if (r1 < 0 || rows <= r1 || r2 < 0 || rows <= r2) {
-            throw new IllegalArgumentException("Row index out of range");
-        }
-        byte [] tmp = values[r1];
-        values[r1] = values[r2];
-        values[r2] = tmp;
     }
 
     private void gaussianElimination() {

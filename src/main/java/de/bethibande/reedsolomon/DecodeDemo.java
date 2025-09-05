@@ -11,15 +11,17 @@ import java.util.stream.Stream;
 
 public class DecodeDemo {
 
+    public static final Path OUTPUT_PATH = Path.of("./decoded.png");
+
     public static void main(String[] args) throws IOException {
-        final Map<String, Path> dataShardFiles = listShards("data");
-        final Map<String, Path> parityShardFiles = listShards("parity");
+        final Map<String, Path> dataShardFiles = listShards(EncodeDemo.DATA_FILE_EXTENSION);
+        final Map<String, Path> parityShardFiles = listShards(EncodeDemo.PARITY_FILE_EXTENSION);
 
         final byte[][] dataShards = new byte[EncodeDemo.DATA_SHARDS][];
         final byte[][] parityShards = new byte[EncodeDemo.PARITY_SHARDS][];
 
-        final int missingDataShards = readShards(EncodeDemo.DATA_SHARDS, "data", dataShardFiles, dataShards);
-        final int missingParityShards = readShards(EncodeDemo.PARITY_SHARDS, "parity", parityShardFiles, parityShards);
+        final int missingDataShards = readShards(EncodeDemo.DATA_SHARDS, EncodeDemo.DATA_FILE_EXTENSION, dataShardFiles, dataShards);
+        final int missingParityShards = readShards(EncodeDemo.PARITY_SHARDS, EncodeDemo.PARITY_FILE_EXTENSION, parityShardFiles, parityShards);
 
         final ReedSolomon rs = new ReedSolomon(EncodeDemo.DATA_SHARDS, EncodeDemo.PARITY_SHARDS);
         if (!rs.canRecover(missingDataShards, missingParityShards)) {
@@ -33,7 +35,7 @@ public class DecodeDemo {
             System.out.println("Restored %d data shards".formatted(missingDataShards));
 
             for (int i = 0; i < dataShards.length; i++) {
-                EncodeDemo.writeShard(i, dataShards[i], "data");
+                EncodeDemo.writeShard(i, dataShards[i], EncodeDemo.DATA_FILE_EXTENSION);
             }
         }
 
@@ -42,14 +44,13 @@ public class DecodeDemo {
             System.out.println("Re-Encoded %d parity shards".formatted(missingParityShards));
 
             for (int i = 0; i < parityShards.length; i++) {
-                EncodeDemo.writeShard(i, parityShards[i], "parity");
+                EncodeDemo.writeShard(i, parityShards[i], EncodeDemo.PARITY_FILE_EXTENSION);
             }
         }
 
-        final Path output = Path.of("./decoded.png");
-        if (Files.exists(output)) Files.delete(output);
+        if (Files.exists(OUTPUT_PATH)) Files.delete(OUTPUT_PATH);
 
-        try (final OutputStream out = Files.newOutputStream(output, StandardOpenOption.CREATE)) {
+        try (final OutputStream out = Files.newOutputStream(OUTPUT_PATH, StandardOpenOption.CREATE)) {
             for (int i = 0; i < dataShards.length; i++) {
                 final long remainingBytes = metadata.actualFileSize() - ((long) i * metadata.shardSize());
                 out.write(dataShards[i], 0, Math.min(dataShards[i].length, (int) remainingBytes));
