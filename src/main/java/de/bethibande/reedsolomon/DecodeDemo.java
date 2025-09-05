@@ -51,7 +51,8 @@ public class DecodeDemo {
 
         try (final OutputStream out = Files.newOutputStream(output, StandardOpenOption.CREATE)) {
             for (int i = 0; i < dataShards.length; i++) {
-                out.write(dataShards[i], 0, Math.min(dataShards[i].length, (int) (metadata.actualFileSize() - (i * metadata.shardSize()))));
+                final long remainingBytes = metadata.actualFileSize() - ((long) i * metadata.shardSize());
+                out.write(dataShards[i], 0, Math.min(dataShards[i].length, (int) remainingBytes));
             }
         }
     }
