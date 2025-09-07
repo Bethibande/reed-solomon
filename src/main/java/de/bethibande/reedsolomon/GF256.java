@@ -7,6 +7,7 @@ public class GF256 {
 
     private static final byte[] exp = new byte[FIELD_SIZE * 2];
     private static final int[] log = new int[FIELD_SIZE];
+    private static final byte[] mul = new byte[FIELD_SIZE * FIELD_SIZE];
 
     static {
         int x = 1;
@@ -21,6 +22,17 @@ public class GF256 {
         exp[255] = exp[0];
 
         log[0] = -1;
+
+        for (int a = 0; a < FIELD_SIZE; a++) {
+            for (int b = 0; b < FIELD_SIZE; b++) {
+                if (a == 0 || b == 0) {
+                    mul[(a << 8) | b] = 0;
+                    continue;
+                }
+
+                mul[(a << 8) | b] = exp[log[a] + log[b]];
+            }
+        }
     }
 
     public static int add(int a, int b) {
@@ -28,8 +40,7 @@ public class GF256 {
     }
 
     public static byte mul(int a, int b) {
-        if (a == 0 || b == 0) return 0;
-        return exp[log[a] + log[b]];
+        return mul[(a << 8) | b];
     }
 
     public static byte pow(int a, int power) {
