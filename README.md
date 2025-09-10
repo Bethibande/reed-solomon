@@ -1,6 +1,6 @@
 # reed-solomon
 This is a very naive implementation of erasure coding using reed-solomon.
-A basic paper on how reed-solomon works can be found here:
+A good paper on how to implement reed-solomon erasure coding can be found here:
 https://web.eecs.utk.edu/~jplank/plank/papers/CS-96-332.pdf
 
 The EncodeDemo.java file will encode a given file into data and parity shards.
